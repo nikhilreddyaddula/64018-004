@@ -1,0 +1,154 @@
+---
+title: "transportation model"
+author: "Nikhil Reddy Addula"
+date: "2022-10-19"
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(lpSolveAPI)
+library(lpSolve)
+library(tinytex)
+library(ggplot2)
+```
+
+```{r}
+price <- matrix(c(22,14,30,600,100,16,20,24,625,120,80,60,70,"-","-"), ncol=5,byrow=TRUE)
+
+colnames(price) <- c("Warehouse1","Warehouse2","Warehouse3","ProductionCost", "ProductionCapacity")
+
+rownames(price) <- c("Plant1","Plant2","Demand")
+
+price <- as.table(price)
+price
+```
+$$Minimize\ the\ transportation\ cost\ is\ the\ objective\ function.$$
+X = 622Y11 + 614Y12 + 630Y13 + 0Y14 + 641Y21 + 645Y22 + 649Y23 + 0Y24
+
+$$Subject\ to\ the\ following\ constraints$$
+
+Supply Constraints
+
+Y11 + Y12 + Y13 + Y14 <= 100
+
+Y21 + Y22 + Y23 + Y24 <= 120
+
+Demand Constraints
+
+Y11 + Y21 >= 80
+
+Y12 + Y22 >= 60
+
+Y13 + Y23 >= 70
+
+Y14 + Y24 >= 10
+
+Non − Negativity Constraints
+
+Yij >= 0 Where i = 1,2 and j = 1,2,3,4
+
+```{r}
+#cost matrix for given objective function
+
+trans_price = matrix(c(622,614,630,0,641,645,649,0),ncol = 4,byrow = T)
+trans_price
+```
+```{r}
+#define column name and row names
+colnames(trans_price)<-c("warehouse1","warehouse2","warehouse3","Dummy")
+
+rownames(trans_price)<-c("plant1","plant2")
+
+trans_price
+```
+
+```{r}
+#setting up constrains
+plan.signs<- rep("<=",2)
+plant.capacity<-c(100,120)
+warehouse.signs<-rep(">=",4)
+month.demand<-c(80,60,70,10)
+```
+
+```{r}
+#lp.transport function
+lptrans.price<- lp.transport(trans_price,"min", plan.signs,plant.capacity,warehouse.signs,month.demand)
+```
+
+```{r}
+#getting the objective value
+lptrans.price$objval
+```
+
+```{r}
+#getting the constraints value
+lptrans.price$solution
+```
+
+80 AEDs in Plant 2 - Warehouse1
+
+60 AEDs in Plant 1 - Warehouse2
+
+40 AEDs in Plant 1 - Warehouse3
+
+30 AEDs in Plant 2 - Warehouse3 To reduce the total cost of manufacturing and transportation, should be created in each plant and then delivered to each of the three wholesaler warehouses.
+
+$$Create\ the\ dual\ of\ the\ above\ transportation\ issue.$$
+Since the primary goal was to reduce transportation costs, the secondary goal would be to increase value added (VA).
+
+Maximize VA = 100P1 + 120P2 − 80W1 − 60W2 − 70W3
+
+Subject to the following constraints
+
+Total Profit Constraints
+
+N1 − R1 >= 622
+
+N2 − R1 >= 614
+
+N3 − R1 >= 630
+
+N1 − R2 >= 641
+
+N2 − R2 >= 645
+
+N3 − R2 >= 649
+
+Where N1 = Warehouse 1
+
+N2 = Warehouse 2
+
+N3 = Warehouse 3
+
+R1 = Plant 1
+
+R2 = Plant 2
+
+Economic Interpretation of the dual
+
+N1 >= R1 + 622
+
+N2 >= R1 + 614
+
+N3 >= R1 + 630
+
+N1 >= R2 + 641
+
+N2 >= R2 + 645
+
+N3 >= R2 + 649
+
+The restrictions listed above, which are based on the economic interpretation of the dual, adhere to the maximizing of profits principle, which states that MR >= MC. where MC stands for marginal cost and MR for marginal cost.
+
+$$ Warehouse1 >= Plant1 + 621\ i.e. MR1 >= MC1$$
+
+The difference between marginal cost (MC), or the income produced for each extra unit sold, and marginal revenue, or The income earned for each extra unit sent to Warehouse 1 should exceed or be equivalent to the change in cost at Plant 1 caused by increasing the supply function.
+
+Businesses can utilize this to balance their production output with expenses in order to increase profits.
