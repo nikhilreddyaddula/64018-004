@@ -1,0 +1,65 @@
+---
+title: "goal programming"
+author: "Nikhil Reddy Addula"
+date: "2022-11-07"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+
+EMAX Corporation:
+
+Maximize Z = P - 6C - 3D, where  
+               
+             P = total (discounted) profit over the life of the new products, 
+             C = change (in either direction) in the current level of employment, 
+             D = decrease (if any) in next year’s earnings from the current year’s level.
+
+From the Given table i can write an equation as follows
+
+        P = 20X1 + 15X2 + 25X3
+       Y1 = 6X1 + 4X2 + 5X3 - 50
+       Y2 = 8X1 + 7X2 +5X3 - 75
+
+         Y1+ is going over the employment level goal and the weighted penality is 6
+         Y1- is going under the employment level goal and the weighted penality is 6
+         Y2+ is going over the earnings goal for next year- no penality
+         Y2- is going under the earnings goal for next year and the peanlity is 3.
+         X1 is the quantity of product 1 to be produced
+         X2 is the quantity of product 2 to be produced
+         X3 is the quantity of product 3 to be produced 
+
+
+
+```{r}
+#activating library packages.
+
+library(lpSolveAPI)
+getwd()
+setwd("/Users/nikhilreddya/Downloads")
+nr_max <- read.lp("Max.lp")
+nr_max
+```
+
+
+```{r}
+
+solve (nr_max)
+```
+
+```{r}
+get.objective(nr_max)
+```
+#The units of combination that the company must use in order to optimize the goal function are X1, X2, and X3. 20 units of Product 1 and 15 units of Product 2 cannot be manufactured since the resultant solution was "0," according to the codes X1 for Product 1, X2 for Product 2, and X3 for Product 3. However, X3 has changed, meaning that the company can only make 15 units of Product 3 the only product in order to increase profit.
+
+#The intention was to stabilize employment levels with a cap of 50 hundred workers as the maximum, but in this case, the business employed more than that by 25 hundred employees (y1p), necessitating the payment of a penalty for the excess/rise in the employee count.
+
+#The objective of y2p and y2m was to measure the rise or fall in the earnings for the following year relative to the present level, which in this case is "0," indicating that there will be no change in the profits for the following year compared to those for the current year. As a result, the earnings for the next year are unchanged.
+```{r}
+get.variables(nr_max)
+```
+#EMAX has to produce 15 units of product 3 and none of products 1 or 2 in order to earn 225 million dollars. Employment will be 2500 individuals higher than the goal.
+
+
