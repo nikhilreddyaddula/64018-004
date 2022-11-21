@@ -1,0 +1,88 @@
+---
+title: "Integer  Programming"
+author: "Nikhil Reddy Addula"
+date: "2022-11-20"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+AP is a shipping service that guarantees overnight delivery of packages in the continental US. 
+The company has various hubs at major cities and airports across the country. Packages are 
+received at hubs, and then shipped to intermediate hubs or to their final destination. 
+ 
+The manager of the AP hub in Cleveland is concerned about labor costs, and is interested in 
+determining the most effective way to schedule workers. The hub operates seven days a week, 
+and the number of packages it handles varies from one day to another. The table below provides 
+an estimate of the number of workers needed each day of the week. 
+
+```{r}
+#Loading lpSolveAPI package
+library(lpSolveAPI)
+getwd()
+#setting working directory
+setwd("/Users/nikhilreddya")
+#loading the lp file
+My_table <- read.lp("My_table.lp")
+My_table
+```
+```{r}
+#The number of employees required on each day of the week is estimated in the table below.
+Workers_Required <-matrix(c("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday",
+18,27,22,26,25,21,19),ncol=2,byrow = F)
+colnames(Workers_Required) <- c("Day_of_the_week", "Workers_Required")
+as.table(Workers_Required)
+
+```
+
+Package handlers at AP are guaranteed a five-day work week with two consecutive days off. The 
+base wage for the handlers is $750 per week. Workers working on Saturday or Sunday receive an 
+additional $25 per day. The possible shifts and salaries for package handlers are: 
+
+```{r}
+DayOffs_wages_emp <- matrix(c(1,2,3,4,5,6,7,
+                               "Sunday and Monday","Monday and Tuesday","Tuesday and Wednesday",
+"Wednesday and Thursday","Thursday and Friday","Friday and Saturday","Saturday and Sunday",
+                               "$775","$800","$800","$800","$800","$775","$750"),ncol=3,byrow=F)
+colnames(DayOffs_wages_emp) <- c("Shift", "Days_Off", "Wage")
+as.table(DayOffs_wages_emp)
+```
+
+```{r}
+solve(My_table)
+```
+```{r}
+get.objective(My_table)
+
+```
+Total cost = $25675
+```{r}
+get.variables(My_table)
+```
+
+The variables are labeled from x1, x2.......x7 where,
+
+*x1 = Number of workers assigned to shift 1 = 2
+
+*x2 = Number of workers assigned to shift 2 = 4
+
+*x3 = Number of workers assigned to shift 3 = 5
+
+*x4 = Number of workers assigned to shift 4 = 0
+
+*x5 = Number of workers assigned to shift 5 = 8
+
+*x6 = Number of workers assigned to shift 6 = 1
+
+*x7 = Number of workers assigned to shift 7 = 13
+
+Hence, the workers availabe for each day is 
+```{r}
+Available <- matrix(c(0,4,5,0,8,1,0,0,0,5,0,8,1,13,2,0,0,0,8,1,13,2,4,0,0,8,1,13,2,4,5,0,0,1,13,2,3,4,0,0,0,13,2,4,5,0,8,0,0), ncol=7,byrow=TRUE)
+colnames(Available)<- c("Shift1", "Shift2", "Shift3", "Shift4", "Shift5", "Shift6", "Shift7")
+row.names(Available) <- c('Sunday', 'Monday', 'Tuesday','Wednesda','Thursday','Friday','Saturday')
+Available
+
+rowSums(Available)
+```
