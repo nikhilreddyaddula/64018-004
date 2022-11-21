@@ -11,7 +11,7 @@
 
 <meta name="author" content="Nikhil Reddy Addula" />
 
-<meta name="date" content="2022-11-07" />
+<meta name="date" content="2022-11-06" />
 
 <title>goal programming</title>
 
@@ -1636,7 +1636,7 @@ pre code {
 
 <h1 class="title toc-ignore">goal programming</h1>
 <h4 class="author">Nikhil Reddy Addula</h4>
-<h4 class="date">2022-11-07</h4>
+<h4 class="date">2022-11-06</h4>
 
 </div>
 
@@ -1675,6 +1675,22 @@ nr_max</code></pre>
 ## Type      Real  Real  Real  Real  Real  Real  Real       
 ## Upper      Inf   Inf   Inf   Inf   Inf   Inf   Inf       
 ## Lower        0     0     0     0     0     0     0</code></pre>
+<pre class="r"><code>table_emax &lt;- matrix(c(&quot;Total Profit&quot;, &quot;Employment Level&quot;, &quot;Earnings Next Year&quot;,
+                       20,6,8,
+                       15,4,7,
+                       25,5,5,
+                       &quot;Maximize&quot;,&quot;=50&quot;,&quot;&gt;=75&quot;,
+                       &quot;Millions of Dollars&quot;, &quot;Hundreds of Employees&quot;, &quot;Millions of Dollars&quot;), ncol=6, byrow = F)
+colnames(table_emax) &lt;- c(&quot;Factor&quot;,&quot;Product 1&quot;, &quot;Product 2&quot;, &quot;Product 3&quot;, &quot;Goal&quot;, &quot;Units&quot;)
+as.table(table_emax)</code></pre>
+<pre><code>##   Factor             Product 1 Product 2 Product 3 Goal    
+## A Total Profit       20        15        25        Maximize
+## B Employment Level   6         4         5         =50     
+## C Earnings Next Year 8         7         5         &gt;=75    
+##   Units                
+## A Millions of Dollars  
+## B Hundreds of Employees
+## C Millions of Dollars</code></pre>
 <pre class="r"><code>solve (nr_max)</code></pre>
 <pre><code>## [1] 0</code></pre>
 <pre class="r"><code>get.objective(nr_max)</code></pre>
